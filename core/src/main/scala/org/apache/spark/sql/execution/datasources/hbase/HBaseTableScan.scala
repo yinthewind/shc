@@ -95,7 +95,7 @@ private[hbase] class HBaseTableScanRDD(
   }
 
   private def containsDynamic(dt: DataType): Boolean = dt match {
-    case m: MapType => m.keyType.isInstanceOf[StringType.type]
+    case m: MapType => m.keyType.isInstanceOf[BinaryType.type]
     case _ => false
   }
 
@@ -139,7 +139,7 @@ private[hbase] class HBaseTableScanRDD(
         if (f.col.isEmpty && containsDynamic(f.dt)) {
 
           val m = scalaColumns.map { case (q, versions) =>
-            val pq = relation.catalog.shcTableCoder.fromBytes(q).toString
+            val pq = relation.catalog.shcTableCoderBinary.fromBytes(q)
             val v = if(getInternalValueType(f.dt).exists(keepVersions)) {
               versions.asScala.mapValues(dataType.fromBytes)
             } else {

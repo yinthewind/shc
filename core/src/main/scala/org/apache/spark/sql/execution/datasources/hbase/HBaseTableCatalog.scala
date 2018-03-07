@@ -179,6 +179,8 @@ case class HBaseTableCatalog(
   //this is required to read fromBytes column families and qualifiers
   val stringField = Field("","","",tCoder,Some("string"))
   val shcTableCoder = SHCDataTypeFactory.create(stringField)
+  val binaryField = Field("", "", "", tCoder, Some("binary"))
+  val shcTableCoderBinary = SHCDataTypeFactory.create(binaryField)
 
   def initRowKey() = {
     val fields = sMap.fields.filter(_.cf == HBaseTableCatalog.rowKey)
