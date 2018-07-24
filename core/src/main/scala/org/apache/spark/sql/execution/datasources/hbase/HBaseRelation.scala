@@ -238,7 +238,7 @@ case class HBaseRelation(
       def addColumnWithTime(col: String)(ts: Long, value: Any) = if(value != null) {
         put.addColumn(coder.toBytes(field.cf), coder.toBytes(col), ts, dataType.toBytes(value))
       }
-      def addColumn(col: String, value: Any) = if(value != null) {
+      def addColumn(col: Any, value: Any) = if(value != null) {
         put.addColumn(coder.toBytes(field.cf), coder.toBytes(col), dataType.toBytes(value))
       }
       field.dt match {
@@ -255,6 +255,9 @@ case class HBaseRelation(
                   row(index).asInstanceOf[Map[String, Any]]
                     .foreach((addColumn _).tupled)
               }
+            case BinaryType =>
+              row(index).asInstanceOf[Map[Array[Byte], Any]]
+                .foreach((addColumn _).tupled)
             case LongType =>
               row(index).asInstanceOf[Map[Long, Any]]
                 .foreach((addColumnWithTime(field.col) _).tupled)
